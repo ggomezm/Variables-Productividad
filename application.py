@@ -16,7 +16,7 @@ def get_barrios():
     return  {"barrios": response.json() }
 
 @app.route('/barrios', methods=['POST'])
-def add_variables():
+def add_barrios():
     url = 'https://6285ace696bccbf32d6678b3.mockapi.io/api/v1/barrios'
     response = requests.post (url, {request}, timeout=5 )
     variables = {"barrios": [{"nombre": response.json["nombre"], "ubicacion": response.json["ubicacion"], "id": response.json["id"]}]}
