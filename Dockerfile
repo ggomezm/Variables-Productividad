@@ -4,7 +4,7 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 ENV FLASK_APP /usr/src/app/sample2/application.py
-ENV FLASK_ENV stagin
+ENV FLASK_ENV production
 ENV PORT $PORT
 
 #CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
