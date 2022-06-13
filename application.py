@@ -1,5 +1,6 @@
 from flask import Flask, request
 import requests
+import os
 
 app = Flask(__name__)
 
@@ -83,3 +84,8 @@ def get_variables():
 def add_variables():
     variables = {"variables": [{"nombre": request.json["nombre"], "tipo": request.json["tipo"], "descripcion": request.json["descripcion"]}]}
     return variables
+
+port = os.environ.get("PORT", 5000)
+# print('get port %d' % port)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=port)
