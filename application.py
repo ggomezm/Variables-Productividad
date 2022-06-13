@@ -14,6 +14,19 @@ def get_barrios():
     response = requests.get (url, {}, timeout=5 )
     return  {"barrios": response.json() }
 
+@app.route('/barrios', methods=['POST'])
+def add_variables():
+    url = 'https://6285ace696bccbf32d6678b3.mockapi.io/api/v1/barrios'
+    response = requests.post (url, {request}, timeout=5 )
+    variables = {"barrios": [{"nombre": response.json["nombre"], "ubicacion": response.json["ubicacion"], "id": response.json["id"]}]}
+    return variables
+
+@app.route('/clima', methods=['GET'])
+def get_clima():
+    url = 'https://api.openweathermap.org/data/3.0/onecall?lat=6.25027313614039&lon=-75.58314414533237&exclude=hourly,daily&appid=34392a979659233359b419555c04c9d8'
+    response = requests.get (url, {}, timeout=5 )
+    return  {"clima": response.json() }
+
 
 @app.route('/variables', methods=['GET'])
 def get_variables():

@@ -1,0 +1,46 @@
+openapi: '3.0.2'
+info:
+  title: API Variables
+  version: '1.0'
+servers:
+  - url: http://127.0.0.1:5000
+paths:
+  /barrios:
+    get:
+      description: 'Barrios'
+      parameters: []
+      responses:
+        '200':
+          description: OK
+  /variables:
+    get:
+      description: 'Variables'
+      parameters: []
+      responses:
+        '200':
+          description: OK
+    post:
+      description: 'Variables'
+      parameters: [
+        { 
+          name: 'Variables', 
+          in: 'query', 
+          description: 'Variable to add',
+          required: true,
+          schema: {
+            type: 'object',
+            format: '{"nombre": "nombre", "tipo": "Blanda,Tecnica", "descripcion":"Descripcion"}'
+          }
+        }
+        ]
+      responses:
+        '200':
+          description: OK
+  /clima:
+    get:
+      description: 'Clima'
+      parameters: []
+      responses:
+        '200':
+          description: OK
+
