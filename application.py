@@ -1,8 +1,7 @@
 from flask import Flask, request
 import requests
 import os
-
-import http.server
+import logging
 from prometheus_client import start_http_server, Counter, generate_latest
 
 app = Flask(__name__)
@@ -11,6 +10,11 @@ home_metric = Counter('home', 'Home view')
 barrios_metric = Counter('barrios', 'Barrios view')
 variables_metric = Counter('variables', 'Variables view')
 variableadd_metric = Counter('variable', 'Variable add', ['variable'])
+
+log_warning_metric = Counter('warning', 'warning log', ['type'])
+log_error_metric = Counter('error', 'error log', ['type'])
+log_info_metric = Counter('info', 'info log', ['type'])
+log_debug_metric = Counter('debug', 'debug log', ['type'])
 
 @app.route('/')
 def home():
@@ -95,6 +99,30 @@ def add_variables():
     variables = {"variables": [{"nombre": request.json["nombre"], "tipo": request.json["tipo"], "descripcion": request.json["descripcion"]}]}
     variableadd_metric.labels(variable=request.json["nombre"]).inc()
     return variables
+
+@app.route('/log/warning', methods=['GET'])
+def get_warning():
+    log_warning_metric.labels(type='Demo').inc()
+    logging.warning('This is a warning message')
+    return  'Warning Demo Log'
+
+@app.route('/log/error', methods=['GET'])
+def get_error():
+    log_error_metric.labels(type='Demo').inc()
+    logging.error('This is an error message')
+    return  'error Demo Log'
+
+@app.route('/log/info', methods=['GET'])
+def get_info():
+    log_info_metric.labels(type='Demo').inc()
+    logging.info('This is an info message')
+    return  'info Demo Log'
+
+@app.route('/log/debug', methods=['GET'])
+def get_debug():
+    log_debug_metric.labels(type='Demo').inc()
+    logging.debug('This is a debug message')
+    return  'debug Demo Log'
 
 @app.route('/metrics')
 def metrics():
