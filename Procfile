@@ -1,1 +1,1 @@
-web: gunicorn Variablez-Productividad:app
+web: gunicorn application:app
