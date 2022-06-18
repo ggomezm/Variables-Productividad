@@ -2,17 +2,26 @@ from flask import Flask, request
 import requests
 import os
 
+import http.server
+from prometheus_client import start_http_server, Counter, generate_latest
+
 app = Flask(__name__)
 
+home_metric = Counter('home', 'Home view')
+barrios_metric = Counter('barrios', 'Barrios view')
+variables_metric = Counter('variables', 'Variables view')
+variableadd_metric = Counter('variable', 'Variable add', ['variable'])
 
 @app.route('/')
 def home():
+    home_metric.inc()
     return 'Variabes de Productividad'
 
 @app.route('/barrios', methods=['GET'])
 def get_barrios():
     url = 'https://6285ace696bccbf32d6678b3.mockapi.io/api/v1/barrios'
     response = requests.get (url, {}, timeout=5 )
+    barrios_metric.inc()
     return  {"barrios": response.json() }
 
 @app.route('/barrios', methods=['POST'])
@@ -77,15 +86,23 @@ def get_variables():
                                 {"nombre": "Commits por tiempo", "tipo": "Tecnica", "descripcion":"Commits por tiempo"},
                                 {"nombre": "Líneas commits por tiempo", "tipo": "Tecnica", "descripcion":"Líneas commits por tiempo"},
                                 {"nombre": "Caracteres commits por tiempo", "tipo": "Tecnica", "descripcion":"Caracteres commits por tiempo"}]}
+    variables_metric.inc()
     return variables
 
 
 @app.route('/variables', methods=['POST'])
 def add_variables():
     variables = {"variables": [{"nombre": request.json["nombre"], "tipo": request.json["tipo"], "descripcion": request.json["descripcion"]}]}
+    variableadd_metric.labels(variable=request.json["nombre"]).inc()
     return variables
+
+@app.route('/metrics')
+def metrics():
+    return generate_latest()
+
 
 port = os.environ.get("PORT", 5000)
 # print('get port %d' % port)
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=port)
+  print("Variables available on port 5000")
+  app.run(host='0.0.0.0', port=port)
